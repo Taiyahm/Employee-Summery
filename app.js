@@ -1,6 +1,6 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
+const Manager = require("./Develop/lib/Manager");
+const Engineer = require("./Develop/lib/Engineer");
+const Intern = require("./Develop/lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -8,14 +8,14 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./lib/htmlRenderer");
+const render = require("./Develop/lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 let employeeArr = [],
 
-const managerPrompt = () => {
+    managerPrompt = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -38,7 +38,7 @@ const managerPrompt = () => {
             name:"office",
         },
     ]).then (input => {
-        const manager = new manager(input.managerName,input.id,input.email,input.office);
+        const manager = new Manager(input.managerName,input.id,input.email,input.office);
         employeeArr.push(manager);
 
         console.log(employeeArr);
@@ -63,12 +63,14 @@ const addMember = () => {
             choices : [ Engineer, Intern , "I dont want to add anymore team members" ]
         },
     ]).then (input =>{
-        
-        if (input.memberType === "Engineer") {
-            employeePrompt();
+        if (input.memberType === "Manager") {
+            managerPrompt();
+        }else if (input.memberType === "Engineer") {
+            engineerPrompt();
         }else if 
            (input.memberType === "Intern"){
-            internQuestion();
+            internPrompt();
+    
         }else {
             (input.memberType === "I dont want to add anymore team members"); {
                 console.log("Done!");
@@ -80,7 +82,7 @@ const addMember = () => {
 
 addMember();
 
-const employeePrompt  = () => {
+const engineerPrompt  = () => {
     inquirer.prompt([
         {
             type:"input",
@@ -104,16 +106,17 @@ const employeePrompt  = () => {
         },
         {
             type:"confirm",
-            message: "What is your engineer's id?",
+            message: "Would you like to add another memeber?",
             name:"addCheck",
         },
     ]).then(input = () => {
-        const engineer = new engineer(input.engineerName, input.id, input.email, input.username);
+        const engineer = new Engineer(input.engineerName, input.id, input.email, input.username);
         employeeArr.push(engineer);
 
         console.log(employeeArr);
 
         if (input.addCheck){
+            addMember();
             let inputData = render(employeeArr);
             fs.writeFile(outputPath,inputData, (err) => {
                 if(err) throw err
@@ -122,7 +125,7 @@ const employeePrompt  = () => {
     })
 }
 
-const intern = () => {
+const internPrompt = () => {
     inquirer.prompt([
         {
             type:"input",
@@ -146,7 +149,11 @@ const intern = () => {
             name:"school",
         },
     ]).then (input = () => {
-        const intern = new intern (input.interName, input.id, input.email, input.school);
+        const intern = new Intern (input.interName, input.id, input.email, input.school);
+        console.log(employeeArr);
+
+        employeeArr.push(intern);
+
         if  (input.addCheck){
             let inputData = render(employeeArr);
             fs.writeFile(outputPath,inputData, (err) => {
