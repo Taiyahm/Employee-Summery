@@ -15,154 +15,96 @@ const render = require("./Develop/lib/htmlRenderer");
 // and to create objects for each team member (using the correct classes as blueprints!)
 let employeeArr = [],
 
-    managerPrompt = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is your manager's name?",
-            name:"managerName",
-        },
-        {
-            type:"input",
-            message: "What is your manager's id?",
-            name:"id",
-        },
-        {
-            type:"input",
-            message: "What is your manager's email?",
-            name:"email",
-        },
-        {
-            type:"input",
-            message: "What is your manager's office number?",
-            name:"office",
-        },
-    ]).then (input => {
-        const manager = new Manager(input.managerName,input.id,input.email,input.office);
-        employeeArr.push(manager);
+// Prompt to add a member 
+const addMember = [
+    {
+        type: "list",
+        message:"Which type of team member would you like to add?",
+        name: "memberType",
+        choices: [
+            "Engineer",
+            "Manager",
+            "Intern",
+            "Team is Complete",
+        ],
+    },
+];
 
-        console.log(employeeArr);
+const engineerPrompt = [
+    {
+        type:"input",
+        message: "What is your engineer's name?",
+        name:"engineerName",
+    },
+    {
+        type:"input",
+        message: "What is your engineer's id?",
+        name:"id",
+    },
+    {
+        type:"input",
+        message: "What is your engineer's email?",
+        name:"email",
+    },
+    {
+        type:"input",
+        message: "What is your engineer's github username?",
+        name:"username",
+    },
+    {
+        type:"confirm",
+        message: "Would you like to add another memeber?",
+        name:"addCheck",
+    },
+]
 
-        if (input.addCheck){
-            addMember();
-        }else {
-            let inputData = render(employeeArr);
-            fs.writeFile(outputPath,inputData, (err) => {
-                if(err) throw err;
-            });
-        }
-    })
-}
+const internPrompt = [
+    {
+        type:"input",
+        message: "What is your intern's name?",
+        name:"internName",
+    },
 
-const addMember = () => {
-    inquirer.prompt([
-        {
-            type: "list",
-            message: "Which type of team member would you like to add?",
-            name:"memberType",
-            choices : [ Engineer, Intern , "I dont want to add anymore team members" ]
-        },
-    ]).then (input =>{
-        if (input.memberType === "Manager") {
-            managerPrompt();
-        }else if (input.memberType === "Engineer") {
-            engineerPrompt();
-        }else if 
-           (input.memberType === "Intern"){
-            internPrompt();
+    {
+        type:"input",
+        message: "What is your intern's id?",
+        name:"id",
+    },
+    {
+        type:"input",
+        message: "What is your intern's email?",
+        name:"email",
+    },
+    {
+        type:"input",
+        message: "What is your intern's school?",
+        name:"school",
+    },
+]
+
+const managerPrompt = [
+    {
+        type: "input",
+        message: "Please enter manager's name:",
+        name: "managerName",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's ID number:",
+        name: "id",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's email address:",
+        name: "email",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's office number:",
+        name: "officeNumber",
+    },
     
-        }else {
-            (input.memberType === "I dont want to add anymore team members"); {
-                console.log("Done!");
-                return;
-            }
-        }
-    })
-}
-
-addMember();
-
-const engineerPrompt  = () => {
-    inquirer.prompt([
-        {
-            type:"input",
-            message: "What is your engineer's name?",
-            name:"engineerName",
-        },
-        {
-            type:"input",
-            message: "What is your engineer's id?",
-            name:"id",
-        },
-        {
-            type:"input",
-            message: "What is your engineer's email?",
-            name:"email",
-        },
-        {
-            type:"input",
-            message: "What is your engineer's git hub username?",
-            name:"username",
-        },
-        {
-            type:"confirm",
-            message: "Would you like to add another memeber?",
-            name:"addCheck",
-        },
-    ]).then(input = () => {
-        const engineer = new Engineer(input.engineerName, input.id, input.email, input.username);
-        employeeArr.push(engineer);
-
-        console.log(employeeArr);
-
-        if (input.addCheck){
-            addMember();
-            let inputData = render(employeeArr);
-            fs.writeFile(outputPath,inputData, (err) => {
-                if(err) throw err
-            });
-        }
-    })
-}
-
-const internPrompt = () => {
-    inquirer.prompt([
-        {
-            type:"input",
-            message: "What is your intern's name?",
-            name:"internName",
-        },
-
-        {
-            type:"input",
-            message: "What is your intern's id?",
-            name:"id",
-        },
-        {
-            type:"input",
-            message: "What is your intern's email?",
-            name:"email",
-        },
-        {
-            type:"input",
-            message: "What is your intern's school?",
-            name:"school",
-        },
-    ]).then (input = () => {
-        const intern = new Intern (input.interName, input.id, input.email, input.school);
-        console.log(employeeArr);
-
-        employeeArr.push(intern);
-
-        if  (input.addCheck){
-            let inputData = render(employeeArr);
-            fs.writeFile(outputPath,inputData, (err) => {
-                if(err) throw err
-            });
-        }
-    })
-}
-
+]
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
