@@ -25,7 +25,7 @@
   This project is licensed under MIT license
 
   ## Test
-  Run the following command to run tests to confirm that dependencies is properly installed:
+  Run the following command to run tests to confirm that dependencies areproperly installed:
   
   ```
   npm run test
