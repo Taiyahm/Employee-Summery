@@ -1,6 +1,6 @@
-const Manager = require("./Develop/lib/Manager");
-const Engineer = require("./Develop/lib/Engineer");
-const Intern = require("./Develop/lib/Intern");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -8,26 +8,50 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./Develop/lib/htmlRenderer");
+const render = require("./lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-let employeeArr = [],
+let employeeArr = [];
 
-// Prompt to add a member 
+// Prompt to add a team member 
 const addMember = [
     {
-        type: "list",
-        message:"Which type of team member would you like to add?",
-        name: "memberType",
-        choices: [
-            "Engineer",
-            "Manager",
-            "Intern",
-            "Team is Complete",
-        ],
+      type: "list",
+      name: "role",
+      message: "Please select the role of the employee:?",
+      choices: [
+        "Engineer",
+        "Intern",
+        "Manager",
+        "Complete roster, no employees left to add.",
+      ],
     },
+];
+
+const managerPrompt = [
+    {
+        type: "input",
+        message: "Please enter manager's name:",
+        name: "managerName",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's ID number:",
+        name: "id",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's email address:",
+        name: "email",
+    },
+    {
+        type: "input",
+        message: "Please enter manager's office number:",
+        name: "officeNum",
+    },
+    
 ];
 
 const engineerPrompt = [
@@ -51,12 +75,7 @@ const engineerPrompt = [
         message: "What is your engineer's github username?",
         name:"username",
     },
-    {
-        type:"confirm",
-        message: "Would you like to add another memeber?",
-        name:"addCheck",
-    },
-]
+];
 
 const internPrompt = [
     {
@@ -80,31 +99,49 @@ const internPrompt = [
         message: "What is your intern's school?",
         name:"school",
     },
-]
+];
 
-const managerPrompt = [
-    {
-        type: "input",
-        message: "Please enter manager's name:",
-        name: "managerName",
-    },
-    {
-        type: "input",
-        message: "Please enter manager's ID number:",
-        name: "id",
-    },
-    {
-        type: "input",
-        message: "Please enter manager's email address:",
-        name: "email",
-    },
-    {
-        type: "input",
-        message: "Please enter manager's office number:",
-        name: "officeNumber",
-    },
-    
-]
+createTeam();
+
+function createTeam() {
+    inquirer.prompt (addMember)
+     .then(function(userInput) {
+         return(userInput);
+        })
+     .then (function (userInput) {
+        if(userInput.role === "Manager") {
+            inquirer.prompt(managerPrompt).then((userInput) => {
+                var addedManager = new Manager(userInput.managerName,userInput.id,userInput.email,userInput.officeNum);
+                employeeArr.push(addedManager);        
+                createTeam();
+            })
+        } 
+        else if (userInput.role === "Engineer") {
+            inquirer.prompt(engineerPrompt).then((response) => {
+
+                var addedEngineer = new Engineer(response.engineerName,response.id,response.email,response.username);
+                employeeArr.push(addedEngineer)
+                createTeam();
+            })       
+        }
+        else if (userInput.role === "Intern") {
+            inquirer.prompt(internPrompt).then((response) => {
+
+                var addedIntern = new Intern(response.internName,response.id,response.email,response.school);
+                employeeArr.push(addedIntern)
+                createTeam();      
+            })
+
+        }else {
+            var createdPage = render(employeeArr);
+            fs.writeFile(outputPath,createdPage , (err) => {
+                if (err) throw err;
+                console.log('Team page has been created')
+            });
+        }
+    })
+            
+}
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
@@ -124,4 +161,4 @@ const managerPrompt = [
 // and Intern classes should all extend from a class named Employee; see the directions
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+// for the provided `render` function to wor
