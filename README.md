@@ -7,18 +7,23 @@
 
   ## Table of Contents
 
-  * [Installation](#Installation)
   * [Demo](#Demonstration)
+  * [Installation](#Installation)
   * [License](#License)
   * [Test](#Test)
   * [Questions](#question) 
+
+
+  ## Demo
+  
+  
 
   ## Installation 
   Clone this repository and run the following command:
   
   ```
   npm i
-  ``` 
+  ```
 
   ## License 
 
