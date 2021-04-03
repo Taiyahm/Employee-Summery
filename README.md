@@ -8,9 +8,8 @@
   ## Table of Contents
 
   * [Installation](#Installation)
-  * [Usage](#Usage)
-  * [License](#License)
   * [Demo](#Demonstration)
+  * [License](#License)
   * [Test](#Test)
   * [Questions](#question) 
 
