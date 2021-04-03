@@ -15,7 +15,7 @@
   * [Questions](#question) 
 
   ## Installation 
-  * Clone this repository and run the following command:
+  Clone this repository and run the following command:
   
   ```
   npm i
